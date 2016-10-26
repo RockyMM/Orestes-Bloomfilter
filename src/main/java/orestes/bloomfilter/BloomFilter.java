@@ -4,12 +4,16 @@ import java.io.Serializable;
 import java.util.BitSet;
 import java.util.Collection;
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
  * Represents a Bloom filter and provides default methods for hashing.
  */
 public interface BloomFilter<T> extends Cloneable, Serializable {
+	
+	static final Function<Object, byte[]> DEFAULT_BYTES_PROVIDER = 
+			element -> element.toString().getBytes(FilterBuilder.defaultCharset());
 
     /**
      * Adds the passed value to the filter.
@@ -150,7 +154,7 @@ public interface BloomFilter<T> extends Cloneable, Serializable {
      * @return the elements byte array representation
      */
     public default byte[] toBytes(T element) {
-        return element.toString().getBytes(FilterBuilder.defaultCharset());
+    	return DEFAULT_BYTES_PROVIDER.apply(element);
     }
 
     /**
